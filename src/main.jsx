@@ -121,7 +121,7 @@ function App() {
       const model = 'Wan-AI/Wan2.2-TI2V-5B'
       let blob
       if (imageFile) {
-        blob = await client.imageToVideo({ image: imageFile, prompt: videoPrompt.trim(), model, provider: 'fal-ai' })
+        blob = await client.imageToVideo({ inputs: imageFile, model, provider: 'fal-ai', parameters: { prompt: videoPrompt.trim(), num_frames: duration <= 5 ? 81 : 121, guidance_scale: 5 } })
       } else {
         blob = await client.textToVideo({
           inputs: videoPrompt.trim(), model, provider: 'fal-ai',
