@@ -2,6 +2,8 @@
 
 A responsive AI creative workspace built with React + Vite.
 
+GitHub Actions runs a production build check on every push and pull request.
+
 ## Included
 - AI image generation through Pollinations
 - AI writing and chat through Pollinations' OpenAI-compatible API
