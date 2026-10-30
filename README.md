@@ -3,11 +3,12 @@
 A responsive AI creative workspace built with React + Vite.
 
 ## Included
-- AI image generation through Pollinations' image endpoint (bring your own permitted API key)
-- AI writing and chat through Pollinations' OpenAI-compatible text endpoint
-- Text-to-speech through Pollinations audio API, with browser speech synthesis fallback
-- Music Studio prompt builder with a link to the free Hugging Face MusicGen demo
-- Local prompt history, downloads, responsive navigation and settings
+- AI image generation through Pollinations
+- AI writing and chat through Pollinations' OpenAI-compatible API
+- Text-to-speech through Pollinations, with browser speech synthesis fallback
+- Music generation through Pollinations audio generation
+- Text-to-video and image-to-video through Hugging Face Inference Providers (Wan 2.2 TI2V)
+- MP4 preview and download, prompt history, responsive navigation and settings
 
 ## Run locally
 ```bash
@@ -15,10 +16,14 @@ npm install
 npm run dev
 ```
 
-## AI provider setup
-Open Settings and add a Pollinations key that is explicitly authorized for browser use. Do not paste a server-only secret key into a public website. The app keeps the entered key in memory for the current tab only. Provider availability, model access and free quotas can change; check https://gen.pollinations.ai/ for current requirements.
+## Provider setup
+Open **Settings** inside the app:
+- Add a Pollinations key authorized for browser use for image, text, voice and music.
+- Add a Hugging Face user access token with **Inference Providers** permission for video generation. Create one at https://huggingface.co/settings/tokens.
 
-Music generation currently opens the hosted MusicGen demo rather than pretending an unavailable API has generated a track. The user can copy their prompt and continue there.
+The app keeps entered tokens in React memory for the current browser tab only. They are not saved to local storage or committed to GitHub. This is suitable for a personal prototype, not a public multi-user production service: before a public launch, move provider calls behind a secure backend or implement an appropriate OAuth flow. Never put a server-only secret in client-side code.
+
+Hugging Face provides limited monthly free inference credits for free accounts; the allowance can change and video provider requests may consume credits or require billing. Free, unlimited AI video generation is not guaranteed. See https://huggingface.co/docs/inference-providers/pricing.
 
 ## Deploy
-Import this repository into Vercel and use the Vite framework preset. No environment variables are required for the static frontend.
+Import this repository into Vercel and use the Vite framework preset. No build-time environment variables are required for the static frontend. Users enter their own provider credentials in Settings.
