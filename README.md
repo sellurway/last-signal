@@ -2,15 +2,16 @@
 
 A responsive AI creative workspace built with React + Vite.
 
-GitHub Actions runs a production build check on every push and pull request.
+## Creative studios
+- **Image generator** — create images from text prompts with Pollinations.
+- **Website generator** — turn a business brief into a standalone responsive HTML website, preview it in the app, copy the source or download the HTML.
+- **AI chat** — brainstorm, plan and ask questions.
+- **AI writer** — create polished copy and content.
+- **Text to voice** — generate MP3 speech, with browser speech synthesis fallback.
+- **Music generator** — generate original music tracks with the Pollinations audio endpoint.
 
-## Included
-- AI image generation through Pollinations
-- AI writing and chat through Pollinations' OpenAI-compatible API
-- Text-to-speech through Pollinations, with browser speech synthesis fallback
-- Music generation through Pollinations audio generation
-- Text-to-video and image-to-video through Hugging Face Inference Providers (Wan 2.2 TI2V)
-- MP4 preview and download, prompt history, responsive navigation and settings
+## Workspace themes
+Midnight, Cloud, Ocean and Sunset themes can be selected from the overview.
 
 ## Run locally
 ```bash
@@ -19,13 +20,11 @@ npm run dev
 ```
 
 ## Provider setup
-Open **Settings** inside the app:
-- Add a Pollinations key authorized for browser use for image, text, voice and music.
-- Add a Hugging Face user access token with **Inference Providers** permission for video generation. Create one at https://huggingface.co/settings/tokens.
+Open **Settings** and add a Pollinations key authorized for browser use. Create/manage keys at https://enter.pollinations.ai/keys.
 
-The app keeps entered tokens in React memory for the current browser tab only. They are not saved to local storage or committed to GitHub. This is suitable for a personal prototype, not a public multi-user production service: before a public launch, move provider calls behind a secure backend or implement an appropriate OAuth flow. Never put a server-only secret in client-side code.
+The app keeps the entered key in React memory for the current browser tab only; it is not stored in local storage or committed to GitHub. This is suitable for a personal prototype, not a public multi-user production service. Before a public launch, move provider calls behind a secure backend or implement an approved OAuth flow. Never put server-only secrets in client-side code.
 
-Hugging Face provides limited monthly free inference credits for free accounts; the allowance can change and video provider requests may consume credits or require billing. Free, unlimited AI video generation is not guaranteed. See https://huggingface.co/docs/inference-providers/pricing.
+Provider availability, model access, quotas and charges can change. Free, unlimited generation is not guaranteed. Browser speech synthesis can be used without a provider key, but MP3 generation requires provider access.
 
 ## Deploy
-Import this repository into Vercel and use the Vite framework preset. No build-time environment variables are required for the static frontend. Users enter their own provider credentials in Settings.
+Import this repository into Vercel and use the Vite framework preset.
