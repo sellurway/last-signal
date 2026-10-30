@@ -109,6 +109,20 @@ function App() {
     } catch(e) { setError(e.message || 'Voice generation failed.') }
     finally { setBusy(false) }
   }
+  const generateMusic = async () => {
+    if (!prompt.trim() || !requireKey()) return
+    setBusy(true); setError(''); setResult(null)
+    try {
+      const url = 'https://gen.pollinations.ai/audio/' + encodeURIComponent(prompt.trim()) + '?model=elevenlabs/music-v2.5'
+      const response = await fetch(url, { headers:{ Authorization:'Bearer ' + apiKey.trim() } })
+      if (!response.ok) throw new Error('Music provider returned ' + response.status + '. Check your key, audio model access or quota.')
+      const blob = await response.blob()
+      const audioUrl = URL.createObjectURL(blob)
+      setResult({ kind:'audio', url:audioUrl, name:'fedemic-music-' + Date.now() + '.mp3' })
+      addHistory('AI music track', 'music', prompt)
+    } catch(e) { setError(e.message || 'Music generation failed.') }
+    finally { setBusy(false) }
+  }
   const sendChat = async () => {
     const value = chatInput.trim()
     if (!value || busy) return
@@ -149,8 +163,8 @@ function App() {
       <header className="topbar"><div className="top-left"><button className="mobile-menu icon-btn" onClick={()=>setMobileOpen(true)}><Menu size={20}/></button><div className="breadcrumb">Workspace <span>/</span> <b>{active==='home'?'Overview':current?.label}</b></div></div><div className="top-actions"><div className={'provider-pill '+(apiKey?'connected':'')}><span/>{apiKey?'Provider connected':'Provider not connected'}</div><button className="icon-btn" title="Toggle theme" onClick={()=>setDark(!dark)}>{dark?<Sun size={18}/>:<Moon size={18}/>}</button><button className="settings-btn" onClick={()=>setSettingsOpen(true)}><Settings2 size={16}/> Settings</button></div></header>
       <div className="page">
         {active==='home' ? <Home title={title} subtitle={subtitle} onSelect={selectTool} history={history} examples={examples}/> :
-        active==='music' ? <MusicStudio prompt={prompt} setPrompt={setPrompt} onCopy={copyPrompt} copied={copied}/> :
-        active==='video' ? <VideoStudio/> :
+        active==='music' ? <MusicStudio prompt={prompt} setPrompt={setPrompt} onCopy={copyPrompt} copied={copied} result={result} busy={busy} error={error} onMusic={generateMusic} onDownload={downloadResult}/> :
+        active==='video' ? <VideoStudio onSelect={selectTool}/> :
         active==='chat' ? <ChatStudio messages={chatMessages} input={chatInput} setInput={setChatInput} onSend={sendChat} busy={busy}/> :
         <Studio tool={current} title={title} subtitle={subtitle} prompt={prompt} setPrompt={setPrompt} busy={busy} result={result} error={error} onImage={generateImage} onText={()=>generateText()} onVoice={generateVoice} onDownload={downloadResult} onCopy={copyPrompt} copied={copied} voice={voice} setVoice={setVoice}/>}
       </div>
@@ -182,13 +196,12 @@ function Studio({tool,title,subtitle,prompt,setPrompt,busy,result,error,onImage,
   </>
 }
 
-function MusicStudio({prompt,setPrompt,onCopy,copied}) {
+function MusicStudio({prompt,setPrompt,onCopy,copied,result,busy,error,onMusic,onDownload}) {
   const examples=['A chilled lo-fi hip hop beat with dusty drums, warm vinyl crackle and mellow electric piano','An epic cinematic orchestral soundtrack with rising strings, huge drums and a heroic brass melody','A soulful Afro-house groove with warm percussion, deep bass, uplifting synths and sunset energy']
-  return <><div className="studio-heading"><div><div className="eyebrow"><span className="eyebrow-dot"/> FEDEMIC MUSIC LAB</div><h1>Make some noise.</h1><p>Describe a feeling, a genre or a whole new sound.</p></div><span className="studio-chip beta"><Music2 size={13}/> MUSIC BETA</span></div><div className="music-hero"><div className="music-visual"><div className="wave-bars">{Array.from({length:35},(_,i)=><i key={i} style={{'--i':i}}/>)}</div><div className="music-disc"><div/></div><div className="music-orbit"/></div><div className="music-copy"><span className="eyebrow">YOUR SOUND STARTS HERE</span><h2>Turn a thought<br/>into a <span>soundtrack.</span></h2><p>Build your music prompt here, then open the free hosted MusicGen studio to generate your track. No fake progress bars, just a real music tool.</p><a className="btn-primary" href="https://huggingface.co/spaces/facebook/MusicGen" target="_blank" rel="noreferrer">Open MusicGen <ExternalLink size={15}/></a></div></div><div className="music-prompt-panel"><div className="panel-title"><div><strong>Describe your track</strong><span>Include genre, mood, instruments, tempo and vocals</span></div><Music2 size={19}/></div><textarea className="prompt-input" rows={4} value={prompt} onChange={e=>setPrompt(e.target.value)} placeholder="A soulful Afro-house track with deep bass, warm percussion, sunset energy..."/><div className="music-actions"><button className="btn-secondary" onClick={()=>onCopy(prompt||examples[0])}><Copy size={14}/>{copied?'Copied':'Copy prompt'}</button><a className="btn-primary" href="https://huggingface.co/spaces/facebook/MusicGen" target="_blank" rel="noreferrer">Continue to MusicGen <ArrowUpRight size={15}/></a></div></div><div className="section music-examples"><div className="section-heading"><div><span className="eyebrow">PROMPT STARTERS</span><h2>Find your sound.</h2></div></div><div className="example-list">{examples.map((e,i)=><button key={e} onClick={()=>setPrompt(e)}><span>0{i+1}</span><p>{e}</p><Plus size={16}/></button>)}</div></div><p className="music-disclaimer">MusicGen is a separate hosted open-source demo. Its availability, queue and usage rules are controlled by its host.</p></>
+  return <><div className="studio-heading"><div><div className="eyebrow"><span className="eyebrow-dot"/> FEDEMIC MUSIC LAB</div><h1>Make some noise.</h1><p>Describe a feeling, a genre or a whole new sound.</p></div><span className="studio-chip beta"><Music2 size={13}/> MUSIC STUDIO</span></div><div className="music-hero"><div className="music-visual"><div className="wave-bars">{Array.from({length:35},(_,i)=><i key={i} style={{'--i':i}}/>)}</div><div className="music-disc"><div/></div><div className="music-orbit"/></div><div className="music-copy"><span className="eyebrow">YOUR SOUND STARTS HERE</span><h2>Turn a thought<br/>into a <span>soundtrack.</span></h2><p>Generate original music from a text description. Choose a genre, mood, instruments and energy to shape your track.</p><span className="music-model-tag">ELEVEN MUSIC · MUSIC V2.5</span></div></div><div className="music-prompt-panel"><div className="panel-title"><div><strong>Describe your track</strong><span>Include genre, mood, instruments, tempo and vocals</span></div><Music2 size={19}/></div><textarea className="prompt-input" rows={4} value={prompt} onChange={e=>setPrompt(e.target.value)} placeholder="A soulful Afro-house track with deep bass, warm percussion, sunset energy..."/><div className="music-actions"><button className="btn-secondary" onClick={()=>onCopy(prompt||examples[0])}><Copy size={14}/>{copied?'Copied':'Copy prompt'}</button><button className="btn-primary" disabled={busy||!prompt.trim()} onClick={onMusic}>{busy?<><LoaderCircle className="spin" size={15}/> Creating track...</>:<><Music2 size={15}/> Generate music <ArrowUpRight size={15}/></>}</button></div>{error&&<p className="music-error">{error}</p>}{busy&&<div className="music-progress"><i/></div>}{result?.kind==='audio'&&<div className="music-output"><div className="music-output-icon"><Headphones size={21}/></div><div><strong>Your track is ready</strong><span>Generated audio · MP3</span></div><audio controls src={result.url}/><button className="btn-secondary" onClick={onDownload}><Download size={14}/> Download</button></div>}</div><div className="section music-examples"><div className="section-heading"><div><span className="eyebrow">PROMPT STARTERS</span><h2>Find your sound.</h2></div></div><div className="example-list">{examples.map((e,i)=><button key={e} onClick={()=>setPrompt(e)}><span>0{i+1}</span><p>{e}</p><Plus size={16}/></button>)}</div></div><p className="music-disclaimer">Music generation uses the connected provider and may consume usage credits. Model availability and pricing can change.</p></>
 }
-
-function VideoStudio() {
-  return <div className="coming-page"><div className="coming-art"><Clapperboard size={42}/><Sparkles size={19}/></div><span className="eyebrow">COMING SOON</span><h1>Motion is next.</h1><p>We're preparing a video creation workspace. For now, create your concept, storyboard and script with AI Writer.</p><button className="btn-primary" onClick={()=>window.location.hash='writer'}>Explore AI Writer <ArrowUpRight size={15}/></button></div>
+function VideoStudio({onSelect}) {
+  return <div className="coming-page"><div className="coming-art"><Clapperboard size={42}/><Sparkles size={19}/></div><span className="eyebrow">COMING SOON</span><h1>Motion is next.</h1><p>Video generation is not connected yet. Build your concept, storyboard and script with AI Writer while we prepare this studio.</p><button className="btn-primary" onClick={()=>onSelect('writer')}>Explore AI Writer <ArrowUpRight size={15}/></button></div>
 }
 
 function ChatStudio({messages,input,setInput,onSend,busy}) {
