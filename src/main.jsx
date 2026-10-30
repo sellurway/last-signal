@@ -233,20 +233,19 @@ function MusicStudio({prompt,setPrompt,onCopy,copied,result,busy,error,onMusic,o
 function VideoStudio({onGenerate,busy,result,error,onDownload,videoFile,setVideoFile}) {
   const [videoPrompt,setVideoPrompt] = useState('')
   const [duration,setDuration] = useState(5)
-  const [aspect,setAspect] = useState('16:9')
   const [mode,setMode] = useState('text')
   const [localError,setLocalError] = useState('')
   const submit = () => {
     setLocalError('')
     if (mode === 'image' && !videoFile) { setLocalError('Choose an image to animate first.'); return }
-    onGenerate({prompt:videoPrompt,imageFile:mode === 'image' ? videoFile : null,duration,aspect})
+    onGenerate({prompt:videoPrompt,imageFile:mode === 'image' ? videoFile : null,duration})
   }
   return <><div className="studio-heading"><div><div className="eyebrow"><span className="eyebrow-dot"/> FEDEMIC MOTION LAB</div><h1>Bring your ideas to life.</h1><p>Generate short AI videos from a text prompt or animate an image with Wan 2.2.</p></div><span className="studio-chip"><Video size={13}/> TEXT TO VIDEO</span></div>
     <div className="video-layout"><section className="control-panel video-controls"><div className="panel-title"><div><strong>Create your video</strong><span>Be clear about the subject, action, camera and atmosphere</span></div><Clapperboard size={19}/></div>
       <div className="video-mode"><button className={mode==='text'?'active':''} onClick={()=>setMode('text')}>Text to video</button><button className={mode==='image'?'active':''} onClick={()=>setMode('image')}>Image to video</button></div>
-      {mode==='image'&&<label className="video-upload"><input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>setVideoFile(e.target.files?.[0]||null)}/><span><ImageIcon size={20}/><strong>{videoFile?.name || 'Choose an image to animate'}</strong><small>PNG, JPG or WebP · keep files under 10 MB</small></span></label>}
+      {mode==='image'&&<label className="video-upload"><input type="file" accept="image/png,image/jpeg,image/webp" onChange={e=>{const f=e.target.files?.[0];if(f&&f.size>10*1024*1024){setLocalError('Please choose an image smaller than 10 MB.');e.target.value='';return}setLocalError('');setVideoFile(f||null)}}/><span><ImageIcon size={20}/><strong>{videoFile?.name || 'Choose an image to animate'}</strong><small>PNG, JPG or WebP · keep files under 10 MB</small></span></label>}
       <textarea className="prompt-input" rows={6} value={videoPrompt} onChange={e=>setVideoPrompt(e.target.value)} placeholder="A cinematic shot of a futuristic sports car driving through a neon-lit Tokyo street at night, rain reflecting the lights, smooth tracking camera, realistic motion..."/>
-      <div className="video-options"><label>Clip length<select value={duration} onChange={e=>setDuration(Number(e.target.value))}><option value={5}>About 5 seconds</option><option value={8}>About 8 seconds</option></select></label><label>Aspect ratio<select value={aspect} onChange={e=>setAspect(e.target.value)}><option value="16:9">Landscape 16:9</option><option value="9:16">Portrait 9:16</option><option value="1:1">Square 1:1</option></select></label></div>
+      <div className="video-options"><label>Clip length<select value={duration} onChange={e=>setDuration(Number(e.target.value))}><option value={5}>About 5 seconds</option><option value={8}>About 8 seconds</option></select></label><div className="video-format-note"><span>OUTPUT</span><strong>Model default · MP4</strong></div></div>
       <button className="btn-primary generate-btn" onClick={submit} disabled={busy||!videoPrompt.trim()}>{busy?<><LoaderCircle className="spin" size={17}/> Generating video...</>:<><Video size={17}/> Generate video <ArrowUpRight size={16}/></>}</button>
       <p className="fine-print"><Zap size={12}/> Requires your Hugging Face token. Free credits are limited; provider billing may apply.</p>
       {(localError||error)&&<p className="video-error">{localError||error}</p>}
