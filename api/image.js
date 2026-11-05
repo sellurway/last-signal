@@ -1,6 +1,6 @@
 export const config = { api: { bodyParser: { sizeLimit: '8mb' } } };
 
-const IMAGE_MODEL = 'gemini-3.1-flash-image';
+const IMAGE_MODEL = 'gemini-2.5-flash-image';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
