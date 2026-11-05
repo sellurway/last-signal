@@ -37,11 +37,19 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await upstream.json().catch(() => ({}));
+    const responseBody = await upstream.text();
+    let data = {};
+    try { data = responseBody ? JSON.parse(responseBody) : {}; } catch { data = {}; }
     if (!upstream.ok) {
-      const message = data?.error?.message || data?.message || 'NVIDIA NIM returned an error.';
+      const message =
+        data?.error?.message ||
+        data?.error?.detail ||
+        data?.message ||
+        data?.detail ||
+        data?.title ||
+        (responseBody ? responseBody.slice(0, 1000) : 'No error details returned by NVIDIA.');
       return res.status(upstream.status >= 400 && upstream.status < 600 ? upstream.status : 502)
-        .json({ error: message });
+        .json({ error: `NVIDIA NIM HTTP ${upstream.status}: ${message}` });
     }
 
     const text = data?.choices?.[0]?.message?.content;
