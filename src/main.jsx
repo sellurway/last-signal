@@ -30,12 +30,12 @@ function App(){
  const current=tools.find(t=>t.id===active)
  useEffect(()=>{document.documentElement.dataset.theme=theme},[theme])
  const addHistory=(title,type,p)=>setHistory(h=>[{id:Date.now(),title,type,prompt:p,time:'Just now'},...h].slice(0,30))
- const requireKey=()=>{if(!apiKey.trim()){setSettingsOpen(true);setError('Connect a Pollinations key in Settings to use AI generation.');return false}return true}
+ const requireKey=()=>{if(!apiKey.trim()){setSettingsOpen(true);setError('Connect a Pollinations key in Settings to use image, voice or music generation.');return false}return true}
  const requestText=async(input,system='You are Fedemic AI, a helpful, clear and creative assistant. Give useful answers.')=>{
-   if(!requireKey())throw new Error('Connect your Pollinations key in Settings.')
-   const res=await fetch('https://gen.pollinations.ai/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+apiKey.trim()},body:JSON.stringify({model:'openai/gpt-5.4-nano',messages:[{role:'system',content:system},{role:'user',content:input}],temperature:.8})})
-   if(!res.ok)throw new Error('AI provider returned '+res.status+'. Check your key or usage quota.')
-   const data=await res.json();return data.choices?.[0]?.message?.content||'No response returned.'
+   const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:input,system})})
+   const data=await res.json().catch(()=>({}))
+   if(!res.ok)throw new Error(data.error||'NVIDIA AI request failed. Check the Vercel FEDEMIC environment variable and deployment.')
+   return data.text||'No response returned.'
  }
  const generateImage=async()=>{if(!prompt.trim()||!requireKey())return;setBusy(true);setError('');setResult(null);try{const url='https://gen.pollinations.ai/image/'+encodeURIComponent(prompt.trim())+'?model=black-forest-labs/flux.1-schnell&width=1024&height=1024&safe=true';const res=await fetch(url,{headers:{Authorization:'Bearer '+apiKey.trim()}});if(!res.ok)throw new Error('Image provider returned '+res.status+'. Check your key or quota.');const blob=await res.blob();setResult({kind:'image',url:URL.createObjectURL(blob),name:'fedemic-image-'+Date.now()+'.png'});addHistory('AI image','image',prompt)}catch(e){setError(e.message)}finally{setBusy(false)}}
  const generateText=async(mode=active)=>{if(!prompt.trim())return;setBusy(true);setError('');setResult(null);try{const text=await requestText(prompt,mode==='writer'?'You are an expert creative writer and marketing copywriter. Produce polished, useful writing. Follow the user request.':'You are Fedemic AI, a helpful and creative assistant.');setResult({kind:'text',text});addHistory(mode==='writer'?'AI writing':'AI chat',mode,prompt)}catch(e){setError(e.message)}finally{setBusy(false)}}
