@@ -3,7 +3,8 @@ export const config = { api: { bodyParser: { sizeLimit: '1mb' } } };
 const getConfig = () => {
   const raw = process.env.ACESTEP_API_URL;
   if (!raw) throw new Error('ACE-Step is not connected yet. Add ACESTEP_API_URL in Vercel after deploying the ACE-Step API server.');
-  const base = raw.replace(/\\/+$/, '');
+  let base = raw.trim();
+  while (base.endsWith('/')) base = base.slice(0, -1);
   const key = process.env.ACESTEP_API_KEY;
   return { base, key };
 };
