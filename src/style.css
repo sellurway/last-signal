@@ -25,3 +25,7 @@ html[data-theme="sunset"]{--bg:#1a1018;--panel:#241722;--panel2:#2b1c29;--line:r
 @media(max-width:900px){.tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.website-builder{grid-template-columns:1fr}.website-preview-panel{min-height:450px}}
 @media(max-width:760px){.tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.website-builder{grid-template-columns:1fr}.website-preview-panel{min-height:420px}.website-actions>*{flex:1;justify-content:center}.nav-group .nav-label{padding-top:16px}}
 @media(max-width:430px){.tool-grid{grid-template-columns:1fr 1fr}.theme-grid{gap:8px}.theme-card{padding:8px}.theme-preview{height:50px}.website-actions{flex-direction:column}}
+
+
+/* Book writer and PDF manuscript editor */
+.writer-title-input{width:100%;min-width:0;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:11px;outline:none}.writer-title-input:focus{border-color:#9b80ef}.book-editor{width:100%;min-height:480px;resize:vertical;background:#fbfaf7;color:#26232a;border:1px solid #e4dfd5;border-radius:9px;padding:24px;font:14px/1.8 Georgia,serif;white-space:pre-wrap;outline:none}.book-editor:focus{border-color:#9b80ef;box-shadow:0 0 0 2px #9b80ef22}.text-result .website-actions{justify-content:flex-start;margin-top:14px;flex-wrap:wrap}html[data-theme="light"] .writer-title-input{background:#f8f7fb;color:#29253b}
