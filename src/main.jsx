@@ -107,17 +107,17 @@ function VoiceStudio({script,setScript,result,setResult,busy,error,onGenerate,re
  const languages=[['en-US','English (US)'],['es-US','Spanish (US)'],['fr-FR','French'],['de-DE','German'],['zh-CN','Chinese'],['vi-VN','Vietnamese'],['it-IT','Italian'],['hi-IN','Hindi'],['ja-JP','Japanese'],['ko-KR','Korean'],['ar-XA','Arabic'],['pt-BR','Portuguese (Brazil)']];
  const voiceOptions={
   'en-US':[['Magpie-Multilingual.EN-US.Aria','Aria · Expressive'],['Magpie-Multilingual.EN-US.Aria.Calm','Aria · Calm'],['Magpie-Multilingual.EN-US.Aria.Happy','Aria · Happy'],['Magpie-Multilingual.EN-US.Jason','Jason · Natural']],
-  'es-US':[['Magpie-Multilingual.ES-US','Spanish · Default']],
-  'fr-FR':[['Magpie-Multilingual.FR-FR','French · Default']],
-  'de-DE':[['Magpie-Multilingual.DE-DE','German · Default']],
-  'zh-CN':[['Magpie-Multilingual.ZH-CN','Chinese · Default']],
-  'vi-VN':[['Magpie-Multilingual.VI-VN','Vietnamese · Default']],
-  'it-IT':[['Magpie-Multilingual.IT-IT','Italian · Default']],
-  'hi-IN':[['Magpie-Multilingual.HI-IN','Hindi · Default']],
-  'ja-JP':[['Magpie-Multilingual.JA-JP','Japanese · Default']],
-  'ko-KR':[['Magpie-Multilingual.KO-KR','Korean · Default']],
-  'ar-XA':[['Magpie-Multilingual.AR-XA','Arabic · Default']],
-  'pt-BR':[['Magpie-Multilingual.PT-BR','Portuguese · Default']]
+  'es-US':[['Magpie-Multilingual.ES-US.Aria','Spanish · Default']],
+  'fr-FR':[['Magpie-Multilingual.FR-FR.Aria','French · Default']],
+  'de-DE':[['Magpie-Multilingual.DE-DE.Aria','German · Default']],
+  'zh-CN':[['Magpie-Multilingual.ZH-CN.Aria','Chinese · Default']],
+  'vi-VN':[['Magpie-Multilingual.VI-VN.Aria','Vietnamese · Default']],
+  'it-IT':[['Magpie-Multilingual.IT-IT.Aria','Italian · Default']],
+  'hi-IN':[['Magpie-Multilingual.HI-IN.Aria','Hindi · Default']],
+  'ja-JP':[['Magpie-Multilingual.JA-JP.Aria','Japanese · Default']],
+  'ko-KR':[['Magpie-Multilingual.KO-KR.Aria','Korean · Default']],
+  'ar-XA':[['Magpie-Multilingual.AR-XA.Aria','Arabic · Default']],
+  'pt-BR':[['Magpie-Multilingual.PT-BR.Aria','Portuguese · Default']]
  };
  const pickLanguage=v=>{setLanguage(v);const first=(voiceOptions[v]||[])[0];if(first)setSpeaker(first[0])};
  const stopAudio=()=>{if(audioRef.current){audioRef.current.pause();audioRef.current.currentTime=0}if('speechSynthesis'in window)window.speechSynthesis.cancel();if(recognitionRef.current){recognitionRef.current.stop();recognitionRef.current=null}setTalking(false)};
