@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Sparkles, Image as ImageIcon, MessageSquareText, Mic2, Music2, WandSparkles, Settings2, Menu, X, ArrowUpRight, Download, Copy, Check, LoaderCircle, History, Zap, Send, Volume2, Play, ExternalLink, Headphones, PenLine, LayoutDashboard, CircleHelp, Sun, Moon, KeyRound, Globe2, Palette, ChevronRight, Code2, Monitor, Smartphone, Laptop, RefreshCw, Square, BookmarkPlus, Trash2, Brain, Mic, AudioLines, Plus, PanelLeftClose, MoreHorizontal } from 'lucide-react'
 import './style.css'
+import AceMusicStudio from './AceMusicStudio'
 
 const groups = [
   { label:'Visual creation', items:[
@@ -68,7 +69,7 @@ function App(){
   <main className="main"><header className="topbar"><div className="top-left"><button className="mobile-menu icon-btn" onClick={()=>setMobileOpen(true)}><Menu size={20}/></button><div className="breadcrumb">Workspace <span>/</span> <b>{active==='home'?'Overview':current?.label}</b></div></div><div className="top-actions"><div className={'provider-pill '+'connected'}><span/>NVIDIA-powered</div><button className="icon-btn" title="Switch theme" onClick={()=>setTheme(theme==='light'?'midnight':'light')}>{theme==='light'?<Moon size={18}/>:<Sun size={18}/>}</button><button className="settings-btn" onClick={()=>setSettingsOpen(true)}><Settings2 size={16}/> Settings</button></div></header>
    <div className="page">{active==='home'?<Home onSelect={select} history={history} examples={examples} themes={themes} theme={theme} setTheme={setTheme}/>:
     active==='voice'?<VoiceStudio script={prompt} setScript={setPrompt} result={result} setResult={setResult} busy={busy} error={error} onGenerate={generateVoice} onGenerateClone={generateClonedVoice} requestText={requestText}/>:
-    active==='music'?<MusicStudio requestText={requestText}/>:
+    active==='music'?<AceMusicStudio requestText={requestText}/>:
     active==='website'?<WebsiteStudio prompt={prompt} setPrompt={setPrompt} result={result} busy={busy} error={error} onGenerate={generateWebsite} onDownload={download} onCopy={copy} copied={copied}/>:
     active==='chat'?<ChatStudio messages={chatMessages} conversations={conversations} activeChatId={activeConversation?.id} onNewChat={createChat} onSelectChat={id=>{setActiveChatId(id);setChatInput('');setError('')}} onDeleteChat={deleteChat} onDeleteMessage={deleteMessage} input={chatInput} setInput={setChatInput} onSend={sendChat} busy={busy} error={error} memories={memories} onSaveMemory={v=>setMemories(m=>m.includes(v)?m:[...m,v].slice(-30))} onDeleteMemory={v=>setMemories(m=>m.filter(x=>x!==v))}/>:
     <Studio tool={current} prompt={prompt} setPrompt={setPrompt} busy={busy} result={result} setResult={setResult} error={error} onImage={generateImage} onEditImage={editImage} onText={()=>generateText()} onVoice={generateVoice} onDownload={download} onCopy={copy} copied={copied} voice={voice} setVoice={setVoice} writerMode={writerMode} setWriterMode={setWriterMode} writerTitle={writerTitle} setWriterTitle={setWriterTitle} onExportPdf={exportWriterPdf} onContinueBook={continueBook}/>}
