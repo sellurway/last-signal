@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         Accept: 'application/json'
       },
       body: JSON.stringify({
-        model: 'meta/llama-3.3-70b-instruct',
+        model: process.env.NVIDIA_MODEL || 'nvidia/nemotron-3.5-lightning-30b-a3b',
         messages: [
           { role: 'system', content: typeof system === 'string' && system.trim() ? system : 'You are Fedemic AI, a helpful, clear and creative assistant.' },
           { role: 'user', content: prompt.trim() }
