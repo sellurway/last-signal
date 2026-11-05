@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed.' });
   }
 
-  const apiKey = process.env.FEDEMIC;
+  const apiKey = process.env.FEDEMIC || process.env.fedemic;
   if (!apiKey) {
     return res.status(500).json({ error: 'NVIDIA NIM is not configured. Add FEDEMIC in Vercel Environment Variables and redeploy.' });
   }
