@@ -65,6 +65,5 @@ Configure any providers you want in Vercel Project Settings -> Environment Varia
 | LLM7.io | `LLM7_API_KEY` | https://llm7.io/ |
 | ModelScope | `MODELSCOPE_API_KEY` | https://modelscope.cn/ |
 | Chutes.ai | `CHUTES_API_KEY` | https://chutes.ai/ |
-| Glhf.chat | `GLHF_API_KEY` | https://glhf.chat/ |
 
 The `/api/models` endpoint reports configured providers without exposing secret values. `/api/ai` validates model IDs against a server-side allowlist and routes requests to the selected provider. Keys are never stored in localStorage or browser code. Each provider may require its own account/key and has its own changing rate limits and free quotas. NVIDIA remains the default. Image understanding stays on NVIDIA vision; image generation and speech retain their dedicated NVIDIA routes.
