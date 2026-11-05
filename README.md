@@ -46,3 +46,25 @@ npm run dev
 ## Deploy
 
 Import this repository into Vercel and use the Vite framework preset. Add the ACE-Step environment variables in Vercel Project Settings, then redeploy.
+
+
+## Multi-provider free LLM catalogue
+
+Fedemic includes a curated server-routed selection of OpenAI-compatible providers from https://github.com/open-free-llm-api/awesome-freellm-apis. The top-bar model selector applies to AI chat, writing, website generation and AI-written song lyrics.
+
+Configure any providers you want in Vercel Project Settings -> Environment Variables, then redeploy:
+
+| Provider | Environment variable | API key signup |
+| --- | --- | --- |
+| NVIDIA NIM | `FEDEMIC` (existing `fedemic` / `navidiakey` aliases work) | https://build.nvidia.com/ |
+| Groq | `GROQ_API_KEY` | https://console.groq.com/keys |
+| Cerebras | `CEREBRAS_API_KEY` | https://cloud.cerebras.ai/ |
+| Mistral AI | `MISTRAL_API_KEY` | https://console.mistral.ai/ |
+| DeepSeek | `DEEPSEEK_API_KEY` | https://platform.deepseek.com/ |
+| OpenRouter | `OPENROUTER_API_KEY` | https://openrouter.ai/keys |
+| LLM7.io | `LLM7_API_KEY` | https://llm7.io/ |
+| ModelScope | `MODELSCOPE_API_KEY` | https://modelscope.cn/ |
+| Chutes.ai | `CHUTES_API_KEY` | https://chutes.ai/ |
+| Glhf.chat | `GLHF_API_KEY` | https://glhf.chat/ |
+
+The `/api/models` endpoint reports configured providers without exposing secret values. `/api/ai` validates model IDs against a server-side allowlist and routes requests to the selected provider. Keys are never stored in localStorage or browser code. Each provider may require its own account/key and has its own changing rate limits and free quotas. NVIDIA remains the default. Image understanding stays on NVIDIA vision; image generation and speech retain their dedicated NVIDIA routes.
