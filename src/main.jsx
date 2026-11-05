@@ -99,8 +99,8 @@ function VoiceStudio({script,setScript,result,setResult,busy,error,onGenerate,re
   {id:'narration',name:'Story narration',desc:'Expressive storytelling',icon:'📖',sample:'Once upon a time, beyond the edge of the known world, a secret waited to be discovered.'},
   {id:'audiobook',name:'Audiobooks',desc:'Warm, steady long-form reading',icon:'🎧',sample:'Chapter one. The morning light slipped through the curtains as the city slowly came alive.'},
   {id:'character',name:'Character voices',desc:'Emotion and personality',icon:'🎭',sample:'You have no idea what I had to sacrifice to get us this far. And I will not turn back now.'},
-  {id:'podcast',name:'Podcast & presenter',desc:'Natural host delivery',icon:'🎙️',sample:'Welcome back to the show. Today, we're breaking down the ideas that are changing the way we work.'},
-  {id:'education',name:'Learning & explainers',desc:'Clear instructional delivery',icon:'🎓',sample:'Let's make this simple. First, identify the main idea. Then break it into three easy steps.'},
+  {id:'podcast',name:'Podcast & presenter',desc:'Natural host delivery',icon:'🎙️',sample:'Welcome back to the show. Today, we are breaking down the ideas that are changing the way we work.'},
+  {id:'education',name:'Learning & explainers',desc:'Clear instructional delivery',icon:'🎓',sample:'Let us make this simple. First, identify the main idea. Then break it into three easy steps.'},
   {id:'business',name:'Business & adverts',desc:'Confident brand voice',icon:'💼',sample:'Meet the smarter way to bring your next big idea to life. Simple, powerful, and made for you.'},
   {id:'social',name:'Social videos',desc:'Punchy short-form scripts',icon:'📱',sample:'Stop scrolling. This one simple idea could change how you create content.'}
  ];
