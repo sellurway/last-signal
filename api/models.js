@@ -8,7 +8,6 @@ export const MODELS = [
  {id:'deepseek-v3-0324',name:'DeepSeek V3',provider:'LLM7.io',env:'LLM7_API_KEY',baseURL:'https://api.llm7.io/v1',tier:'Free tier',keyUrl:'https://llm7.io/'},
  {id:'Qwen/Qwen3.5-27B',name:'Qwen 3.5 27B',provider:'ModelScope',env:'MODELSCOPE_API_KEY',baseURL:'https://api-inference.modelscope.cn/v1',tier:'Free tier',keyUrl:'https://modelscope.cn/'},
  {id:'meta-llama/Meta-Llama-3.1-70B-Instruct',name:'Llama 3.1 70B',provider:'Chutes.ai',env:'CHUTES_API_KEY',baseURL:'https://api.chutes.ai/v1',tier:'Community free tier',keyUrl:'https://chutes.ai/'},
- {id:'meta-llama/Meta-Llama-3.1-70B-Instruct',name:'Llama 3.1 70B',provider:'Glhf.chat',env:'GLHF_API_KEY',baseURL:'https://glhf.chat/api/openai/v1',tier:'Free model tier',keyUrl:'https://glhf.chat/'}
 ];
 export default async function handler(req,res){
  if(req.method!=='GET'){res.setHeader('Allow','GET');return res.status(405).json({error:'Method not allowed.'});}
