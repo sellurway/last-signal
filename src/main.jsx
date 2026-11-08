@@ -58,7 +58,7 @@ function App(){
  const select=id=>{setActive(id);setPrompt('');setResult(null);setError('');setMobileOpen(false)}
  return <div className="app-shell">
   <aside className={'sidebar '+(mobileOpen?'mobile-open':'')}>
-   <div className="brand"><div className="brand-mark"><Sparkles size={21}/></div><span>fedemic<span className="brand-ai">.ai</span></span><button className="mobile-close icon-btn" onClick={()=>setMobileOpen(false)}><X size={18}/></button></div>
+   <div className="brand"><div className="brand-mark"><img src="/fedemic-mark.svg" alt="" /></div><span>fedemic<span className="brand-ai">.ai</span></span><button className="mobile-close icon-btn" onClick={()=>setMobileOpen(false)}><X size={18}/></button></div>
    <button className={'nav-item '+(active==='home'?'selected':'')} onClick={()=>select('home')}><LayoutDashboard size={18}/><span>Overview</span></button>
    {groups.map(g=><div className="nav-group" key={g.label}><div className="nav-label">{g.label}</div>{g.items.map(t=><button key={t.id} className={'nav-item '+(active===t.id?'selected':'')} onClick={()=>select(t.id)}><t.icon size={18}/><span>{t.label}</span>{t.tag&&<small className="nav-tag">{t.tag}</small>}</button>)}</div>)}
    <div className="sidebar-spacer"/><div className="sidebar-promo"><div className="promo-icon"><Zap size={17}/></div><strong>Ideas into reality.</strong><p>One creative space. Endless possibilities.</p><button onClick={()=>setSettingsOpen(true)}>Connect AI provider <ArrowUpRight size={14}/></button></div>
