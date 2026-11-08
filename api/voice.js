@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed.' });
   }
-  const apiKey = process.env.FEDEMIC || process.env.fedemic || process.env.navidiakey;
+  const apiKey = process.env.FEDEMIC || process.env.fedemic || process.env.navidiakey || process.env.Nvidiakey;
   if (!apiKey) return res.status(500).json({ error: 'NVIDIA is not configured. Check the existing navidiakey environment variable in Vercel.' });
   const { text, language = 'en-US', voice = 'Magpie-Multilingual.EN-US.Aria' } = req.body || {};
   if (typeof text !== 'string' || !text.trim()) return res.status(400).json({ error: 'Enter a script first.' });
