@@ -1,6 +1,6 @@
 export default async function handler(req,res){
  if(req.method!=='GET'){res.setHeader('Allow','GET');return res.status(405).json({error:'Method not allowed.'})}
- const key=process.env.FEDEMIC||process.env.fedemic||process.env.navidiakey;
+ const key=process.env.FEDEMIC||process.env.fedemic||process.env.navidiakey||process.env.Nvidiakey;
  if(!key)return res.status(500).json({error:'NVIDIA API key is not configured.'});
  try{
   const r=await fetch('https://877104f7-e885-42b9-8de8-f6e4c6303969.invocation.api.nvcf.nvidia.com/v1/audio/list_voices',{headers:{Authorization:`Bearer ${key}`}});
