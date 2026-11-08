@@ -2,7 +2,7 @@ export const config = { api: { bodyParser: { sizeLimit: '6mb' } } };
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'Method not allowed.' }); }
-  const apiKey = process.env.FEDEMIC || process.env.fedemic || process.env.navidiakey || process.env.Nvidiakey;
+  const apiKey = process.env.Nvidiakey || process.env.navidiakey || process.env.FEDEMIC || process.env.fedemic;
   if (!apiKey) return res.status(500).json({ error: 'NVIDIA NIM is not configured. Check the existing Vercel server environment variable.' });
   const { prompt, system, images } = req.body || {};
   if (typeof prompt !== 'string' || (!prompt.trim() && !Array.isArray(images))) return res.status(400).json({ error: 'Enter a message or attach an image.' });
@@ -27,7 +27,8 @@ export default async function handler(req, res) {
           { role: 'system', content: typeof system === 'string' && system.trim() ? system : 'You are Fedemic AI, a helpful, clear and creative assistant.' },
           { role: 'user', content: userContent }
         ],
-        temperature: 0.7, max_tokens: 4096, stream: false
+        temperature: 0.7, max_tokens: 4096, stream: false,
+        chat_template_kwargs: { enable_thinking: false }
       }),
       signal: controller.signal
     });
