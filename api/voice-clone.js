@@ -16,7 +16,7 @@ function parseWav(buffer) {
 
 export default async function handler(req,res){
   if(req.method!=='POST'){res.setHeader('Allow','POST');return res.status(405).json({error:'Method not allowed.'})}
-  const apiKey=process.env.FEDEMIC||process.env.fedemic||process.env.navidiakey;
+  const apiKey=process.env.FEDEMIC||process.env.fedemic||process.env.navidiakey||process.env.Nvidiakey;
   const endpoint=process.env.NVIDIA_MAGPIE_ZEROSHOT_URL;
   if(!apiKey)return res.status(500).json({error:'NVIDIA API key is not configured.'});
   if(!endpoint)return res.status(503).json({error:'Voice cloning needs an approved NVIDIA Magpie ZeroShot endpoint. Configure NVIDIA_MAGPIE_ZEROSHOT_URL in Vercel after NVIDIA grants access. Standard Magpie TTS does not support cloning.'});
