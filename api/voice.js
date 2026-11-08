@@ -11,6 +11,8 @@ export default async function handler(req, res) {
   const allowedLanguages = ['en-US','es-US','fr-FR','de-DE','zh-CN','vi-VN','it-IT','hi-IN','ja-JP','ko-KR','ar-XA','pt-BR'];
   if (!allowedLanguages.includes(language)) return res.status(400).json({ error: 'That language is not supported by this NVIDIA voice endpoint yet.' });
   if (typeof voice !== 'string' || voice.length > 160 || !voice.startsWith('Magpie-Multilingual.')) return res.status(400).json({ error: 'Choose a supported NVIDIA Magpie voice.' });
+  const controller = new AbortController();
+  res.on('close', () => { if (!res.writableEnded) controller.abort(); });
   try {
     const form = new FormData();
     form.append('text', text.trim());
@@ -20,7 +22,8 @@ export default async function handler(req, res) {
     const upstream = await fetch('https://877104f7-e885-42b9-8de8-f6e4c6303969.invocation.api.nvcf.nvidia.com/v1/audio/synthesize', {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}` },
-      body: form
+      body: form,
+      signal: controller.signal
     });
     if (!upstream.ok) {
       const detail = await upstream.text();
@@ -32,6 +35,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     return res.status(200).send(audio);
   } catch {
+    if (controller.signal.aborted) return;
     return res.status(502).json({ error: 'Could not reach NVIDIA speech. Please try again.' });
   }
 }
