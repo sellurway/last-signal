@@ -2,7 +2,7 @@ export const config = { api: { bodyParser: { sizeLimit: '8mb' } } };
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'Method not allowed.' }); }
-  const apiKey = process.env.FEDEMIC || process.env.fedemic || process.env.navidiakey;
+  const apiKey = process.env.FEDEMIC || process.env.fedemic || process.env.navidiakey || process.env.Nvidiakey;
   if (!apiKey) return res.status(500).json({ error: 'NVIDIA is not configured. Add your existing NVIDIA key to Vercel as FEDEMIC or navidiakey, then redeploy.' });
   const { prompt, image } = req.body || {};
   if (typeof prompt !== 'string' || !prompt.trim()) return res.status(400).json({ error: 'Enter an image prompt first.' });
