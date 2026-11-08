@@ -1,30 +1,40 @@
 # FEDEMIC AI
 
-A responsive AI creative workspace built with React + Vite.
+A responsive AI creative workspace built with React, Vite and Vercel serverless API routes.
 
 ## Creative studios
-- **Image generator** — create images from text prompts with Pollinations.
-- **Website generator** — turn a business brief into a standalone responsive HTML website, preview it in the app, copy the source or download the HTML.
-- **AI chat** — brainstorm, plan and ask questions.
-- **AI writer** — create polished copy and content.
-- **Text to voice** — generate MP3 speech, with browser speech synthesis fallback.
-- **Music generator** — generate original music tracks with the Pollinations audio endpoint.
+- **AI chat and writer** — NVIDIA NIM chat completions.
+- **Image generation** — NVIDIA FLUX.1 Schnell.
+- **Image editing** — NVIDIA FLUX.1 Kontext.
+- **Website generator** — creates standalone responsive HTML websites.
+- **Text to voice** — NVIDIA Magpie speech synthesis.
+- **Music Studio** — browser-based beat sequencer, NVIDIA-assisted lyric writing and Magpie spoken vocal takes.
+- **Video Studio** — NVIDIA WAN 2.2 through a separately deployed, OpenAI-compatible NVIDIA NIM video endpoint.
 
-## Workspace themes
-Midnight, Cloud, Ocean and Sunset themes can be selected from the overview.
+## NVIDIA environment variables
+
+Set the existing NVIDIA API key in Vercel as `Nvidiakey`. The server also recognises `navidiakey`, `FEDEMIC`, and `fedemic`. Keep all secrets server-side; never place them in frontend code.
+
+Open **Settings → Test NVIDIA connection** to check whether the deployed Vercel function can read the key and whether NVIDIA accepts it. The check reports the environment-variable name and API status without revealing the secret.
+
+## Video generation setup
+
+NVIDIA WAN 2.2 is a self-hosted NIM model; a normal NVIDIA API key does not provide a hosted WAN 2.2 GPU server. To activate Video Studio:
+
+1. Deploy NVIDIA WAN 2.2 NIM on a compatible GPU server (NVIDIA documents 80 GB minimum GPU memory).
+2. Configure the NIM's OpenAI-compatible `/v1/videos/generations` endpoint.
+3. Add the full HTTPS endpoint in Vercel as `NVIDIA_VIDEO_API_URL`.
+4. Redeploy the Vercel project.
+
+Video Studio creates four-second 832×480 clips and supports optional image-to-video input. The Vercel function has a 60-second execution ceiling in this project; long-running video inference may require an asynchronous job service or a deployment plan/platform that supports longer execution.
 
 ## Run locally
+
 ```bash
 npm install
 npm run dev
 ```
 
-## Provider setup
-Open **Settings** and add a Pollinations key authorized for browser use. Create/manage keys at https://enter.pollinations.ai/keys.
-
-The app keeps the entered key in React memory for the current browser tab only; it is not stored in local storage or committed to GitHub. This is suitable for a personal prototype, not a public multi-user production service. Before a public launch, move provider calls behind a secure backend or implement an approved OAuth flow. Never put server-only secrets in client-side code.
-
-Provider availability, model access, quotas and charges can change. Free, unlimited generation is not guaranteed. Browser speech synthesis can be used without a provider key, but MP3 generation requires provider access.
-
 ## Deploy
-Import this repository into Vercel and use the Vite framework preset.
+
+Import this repository into Vercel and use the Vite framework preset. The `api/` directory contains the serverless API routes.
