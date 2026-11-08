@@ -15,8 +15,10 @@ export default async function handler(req, res) {
     endpoint = process.env.NVIDIA_IMAGE_EDIT_URL || 'https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.1-kontext-dev';
     payload.image = image;
   }
+  const controller = new AbortController();
+  res.on('close', () => { if (!res.writableEnded) controller.abort(); });
   try {
-    const upstream = await fetch(endpoint, { method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload) });
+    const upstream = await fetch(endpoint, { method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload), signal: controller.signal });
     const raw = await upstream.text();
     let data = {}; try { data = raw ? JSON.parse(raw) : {}; } catch {}
     if (!upstream.ok) {
@@ -27,5 +29,5 @@ export default async function handler(req, res) {
     if (typeof base64 !== 'string' || !base64) return res.status(502).json({ error: 'NVIDIA returned no image data. Check that your key has access to the selected visual model.' });
     const mimeType = data?.artifacts?.[0]?.mime_type || 'image/png';
     return res.status(200).json({ image: base64.replace(/^data:image\/[^;]+;base64,/, ''), mimeType });
-  } catch { return res.status(502).json({ error: 'Could not reach NVIDIA image generation. Please try again.' }); }
+  } catch { if (controller.signal.aborted) return; return res.status(502).json({ error: 'Could not reach NVIDIA image generation. Please try again.' }); }
 }
