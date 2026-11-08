@@ -2,7 +2,7 @@ export const config = { api: { bodyParser: { sizeLimit: '6mb' } } };
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'Method not allowed.' }); }
-  const apiKey = process.env.FEDEMIC || process.env.fedemic || process.env.navidiakey;
+  const apiKey = process.env.FEDEMIC || process.env.fedemic || process.env.navidiakey || process.env.Nvidiakey;
   if (!apiKey) return res.status(500).json({ error: 'NVIDIA NIM is not configured. Check the existing Vercel server environment variable.' });
   const { prompt, system, images } = req.body || {};
   if (typeof prompt !== 'string' || (!prompt.trim() && !Array.isArray(images))) return res.status(400).json({ error: 'Enter a message or attach an image.' });
