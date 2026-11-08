@@ -14,6 +14,8 @@ export default async function handler(req, res) {
     if (typeof image !== 'string' || !/^data:image\/(jpeg|png|webp);base64,/i.test(image) || image.length > 1500000) return res.status(400).json({ error: 'An image is invalid or too large. Use JPG, PNG or WEBP images under 1.1 MB after compression.' });
     validImages.push(image);
   }
+  const controller = new AbortController();
+  res.on('close', () => { if (!res.writableEnded) controller.abort(); });
   try {
     const userContent = validImages.length ? [...validImages.map(url => ({ type: 'image_url', image_url: { url } })), { type: 'text', text: prompt.trim() || 'Please describe and help me understand the attached image(s).' }] : prompt.trim();
     const upstream = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
@@ -26,7 +28,8 @@ export default async function handler(req, res) {
           { role: 'user', content: userContent }
         ],
         temperature: 0.7, max_tokens: 4096, stream: false
-      })
+      }),
+      signal: controller.signal
     });
     const responseBody = await upstream.text();
     let data = {};
@@ -38,5 +41,5 @@ export default async function handler(req, res) {
     const text = data?.choices?.[0]?.message?.content;
     if (typeof text !== 'string' || !text.trim()) return res.status(502).json({ error: 'NVIDIA returned an empty response. Try again.' });
     return res.status(200).json({ text });
-  } catch { return res.status(502).json({ error: 'Could not reach NVIDIA NIM. Please try again.' }); }
+  } catch { if (controller.signal.aborted) return; return res.status(502).json({ error: 'Could not reach NVIDIA NIM. Please try again.' }); }
 }
