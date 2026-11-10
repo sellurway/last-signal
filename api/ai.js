@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   if (typeof prompt !== 'string' || (!prompt.trim() && !Array.isArray(images))) return res.status(400).json({ error: 'Enter a message or attach an image.' });
   if (prompt.length > 20000 || (typeof system === 'string' && system.length > 5000)) return res.status(413).json({ error: 'Your prompt is too long. Please shorten it and try again.' });
   const attached = Array.isArray(images) ? images : [];
-  if (attached.length > 3) return res.status(400).json({ error: 'You can attach up to 3 images per message.' });
+  if (attached.length > 6) return res.status(400).json({ error: 'You can attach up to 6 images per website or chat request.' });
   const validImages = [];
   for (const image of attached) {
     if (typeof image !== 'string' || !/^data:image\/(jpeg|png|webp);base64,/i.test(image) || image.length > 1500000) return res.status(400).json({ error: 'An image is invalid or too large. Use JPG, PNG or WEBP images under 1.1 MB after compression.' });
