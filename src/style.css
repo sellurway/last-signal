@@ -135,3 +135,35 @@ html[data-theme="sunset"]{--bg:#1a1018;--panel:#241722;--panel2:#2b1c29;--line:r
 .music-pro-grid.lyrics-only .music-lyrics-panel{width:100%;max-width:100%}
 .music-stop{margin-top:12px}
 @media(max-width:650px){.music-heading-actions{align-items:flex-end;flex-direction:column;gap:8px}.generate-actions{align-items:stretch}.btn-stop{padding:10px 12px}}
+
+/* Website builder: complete brand intake and photo studio */
+.website-form-panel{max-height:calc(100vh - 150px);overflow:auto;scrollbar-width:thin}
+.website-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.website-form-grid label,.website-wide-field{display:flex;flex-direction:column;gap:6px;color:#aaa9bb;font-size:10px;min-width:0}
+.website-form-grid input,.website-form-grid select,.website-wide-field>input,.website-wide-field>textarea,.website-wide-field>select{width:100%;min-width:0;background:#0c0d17;color:#f2efff;border:1px solid #303044;border-radius:8px;padding:10px 11px;font:inherit;font-size:11px;outline:none}
+.website-form-grid input:focus,.website-form-grid select:focus,.website-wide-field>input:focus,.website-wide-field>textarea:focus,.website-wide-field>select:focus{border-color:#8069d9;box-shadow:0 0 0 3px #8069d91c}
+.website-wide-field{margin:13px 0}
+.website-wide-field>textarea{resize:vertical;line-height:1.6}
+.website-color-field{display:flex;align-items:center;gap:10px;background:#0c0d17;border:1px solid #303044;border-radius:8px;padding:4px 8px}
+.website-color-field input{width:30px;height:28px;padding:0;border:0;background:transparent}
+.website-color-field span{font-size:10px;color:#d4d0e4}
+.website-section-block{padding:13px 0;border-top:1px solid var(--line)}
+.website-section-block>strong,.website-upload-heading strong{display:block;font-size:11px;color:#eeeaf8}
+.website-section-block>span,.website-upload-heading span{display:block;font-size:9px;line-height:1.5;color:#85869b;margin-top:4px}
+.website-chip-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.website-chip-list button{border:1px solid #373449;background:#171624;color:#a6a3b6;border-radius:20px;padding:7px 9px;font-size:9px;cursor:pointer}
+.website-chip-list button.active{border-color:#8b76dc;background:#30264b;color:#e5dcff}
+.website-upload-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.website-upload-heading .btn-secondary{white-space:nowrap;flex-shrink:0}
+.website-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.website-photo-thumb{position:relative;min-width:0;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#0c0d17}
+.website-photo-thumb img{display:block;width:100%;height:82px;object-fit:cover}
+.website-photo-thumb span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:6px 7px;font-size:8px;color:#bcb8cb}
+.website-photo-thumb button{position:absolute;top:5px;right:5px;border:0;border-radius:50%;width:23px;height:23px;display:grid;place-items:center;background:#181522e8;color:white;cursor:pointer}
+.website-form-panel .generate-btn{margin-top:8px}
+@media(max-width:1050px){.website-builder{grid-template-columns:1fr}.website-form-panel{max-height:none}.website-preview-panel{min-height:430px}}
+@media(max-width:580px){.website-form-grid{grid-template-columns:1fr}.website-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.website-upload-heading{align-items:flex-start;flex-direction:column}}
+html[data-theme="light"] .website-form-grid input,html[data-theme="light"] .website-form-grid select,html[data-theme="light"] .website-wide-field>input,html[data-theme="light"] .website-wide-field>textarea,html[data-theme="light"] .website-wide-field>select,html[data-theme="light"] .website-color-field{background:#f8f7fb;color:#29253b}
+html[data-theme="light"] .website-section-block>strong,html[data-theme="light"] .website-upload-heading strong{color:#29253b}
+html[data-theme="light"] .website-chip-list button{background:#f6f4fa;color:#615d70;border-color:#ded9e9}
+html[data-theme="light"] .website-chip-list button.active{background:#eee8fb;color:#5943a2;border-color:#9a85dc}
