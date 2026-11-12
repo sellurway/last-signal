@@ -1,8 +1,8 @@
-# Fedemic Cloud app scaffold
+# Fedemic Cloud frontend
 
-This directory contains the separate Fedemic Cloud product surface. It is isolated from the existing Fedemic AI creative workspace at the repository root.
+This is the separate Fedemic Cloud dashboard. It does not replace or modify the Fedemic AI application at the repository root.
 
-## Run
+## Run locally
 
 ```bash
 cd apps/fedemic-cloud
@@ -12,8 +12,12 @@ npm run dev
 
 ## Current status
 
-Phase 1 dashboard prototype. Project CRUD is stored in browser localStorage when Supabase is not configured. This is demo persistence only, not production authentication or multi-user storage.
+The Phase 1 dashboard is a browser-only prototype. Project create/list/open/delete currently uses localStorage. It is not yet connected to real accounts or shared cloud storage.
 
-To enable the Supabase client, copy .env.example to .env.local and set the public project URL and anon key. Apply supabase/migrations/0001_fedemic_cloud.sql to a dedicated Supabase project. Real authentication and database wiring are still required before production use.
+## Backend
 
-Never place a Supabase service-role key in Vite environment variables.
+The API is a separate Cloudflare Worker in `apps/fedemic-cloud-api/`. It uses the existing Cloudflare D1 database named `fedemic-cloud` and Better Auth for email/password authentication.
+
+Do not add Supabase credentials here. Do not put server secrets in any `VITE_` variable. The frontend will be connected to the Worker after the API is deployed and its allowed frontend origin is configured.
+
+The existing `supabase/migrations/0001_fedemic_cloud.sql` file is a retired draft and must not be applied. The five existing Cloudflare D1 application tables are retained. Better Auth's own authentication tables will be generated and added separately in a later setup step.
