@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fedemic-cloud-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "fedemic-cloud",
+      "database_id": "REPLACE_WITH_YOUR_EXISTING_D1_DATABASE_ID"
+    }
+  ]
+}
