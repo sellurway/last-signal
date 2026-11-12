@@ -6,9 +6,11 @@
 **Status:** Phase 1 foundation in progress.
 
 ## Product
+
 Fedemic Cloud is one platform for creators and developers. Customers create websites with AI, visually edit them, import code from GitHub, deploy projects, connect custom domains they own, and manage hosting from one account.
 
 ## Product surfaces
+
 1. Marketing site and pricing.
 2. Authentication and account settings.
 3. Project dashboard.
@@ -23,38 +25,46 @@ Fedemic Cloud is one platform for creators and developers. Customers create webs
 ## Phased delivery and acceptance criteria
 
 ### Phase 1 — Foundation (current)
-- Isolated Fedemic Cloud application surface; do not replace the existing Fedemic AI creative workspace.
-- Responsive dashboard shell and navigation.
-- Create, list, open and delete website projects.
-- Local demo persistence for prototype use.
-- PostgreSQL schema with row-level security for real accounts and projects.
-- Environment configuration and clear production integration boundaries.
 
-Acceptance: the isolated app installs and builds; dashboard works in demo mode; project CRUD persists in the current browser; database migration is reviewed. Demo mode is not production authentication or multi-user storage.
+- Separate Fedemic Cloud app; do not replace the existing Fedemic AI workspace.
+- Responsive dashboard shell and navigation.
+- Create, list, open and delete website projects in demo mode.
+- Cloudflare Worker API project prepared separately from the frontend.
+- Cloudflare D1 database named `fedemic-cloud` and application tables created.
+- Demo mode clearly identified as browser-local only.
+
+Acceptance: frontend builds independently; dashboard works in demo mode; Worker source is prepared for deployment. Authentication is not considered live until Better Auth tables, registration, login, session checks and ownership checks are tested.
 
 ### Phase 2 — Accounts and builder
-- Supabase Auth (email/password and OAuth).
-- Server-verified identity and project ownership.
+
+- Better Auth email/password authentication on Cloudflare Workers.
+- Cloudflare D1 as the database for authentication and customer data.
+- Server-verified identity and project ownership on every private API action.
 - Structured page schema and component registry.
 - Drag/drop canvas, inspector, page management, undo/redo and autosave.
 - AI produces validated page schema, not arbitrary privileged code.
 
 ### Phase 3 — Static hosting engine
+
 - Queue-backed, isolated, ephemeral build workers.
 - Static artifact storage, immutable deployment IDs and atomic production promotion.
 - Platform subdomains, CDN delivery, logs, quotas and abuse controls.
+- R2/object storage is optional and is postponed until a genuinely free/affordable path is confirmed.
 
 ### Phase 4 — GitHub deployments
+
 - GitHub App installation with least-privilege repository permissions.
 - Branch selection, signed webhook verification, build configuration and environment secrets.
 - Previews, logs and rollback. Customer code never runs inside the dashboard/API process.
 
 ### Phase 5 — Custom domains
+
 - Customer adds a domain they control.
 - DNS ownership challenge, routing and managed TLS.
-- Registrar integration is separate; the customer is registrant and renewal/transfer terms are explicit.
+- Registrar integration is separate; the customer remains the registrant and renewal/transfer terms are explicit.
 
 ### Phase 6 — Monetization and scale
+
 - Payment provider and webhook-verified entitlements.
 - $10 lifetime builder entitlement with published fair-use limits.
 - Paid storage, bandwidth, build minutes, AI credits and team features.
@@ -63,47 +73,57 @@ Acceptance: the isolated app installs and builds; dashboard works in demo mode; 
 ## Technical architecture
 
 ### Frontend
-- React + TypeScript + Vite.
-- Feature-oriented structure: app shell, projects, builder, integrations, domains and billing.
-- UI state in React; durable customer data in the backend.
-- Shared component schema for AI-generated and manually edited pages.
+
+- React + Vite.
+- Separate app directory: `apps/fedemic-cloud/`.
+- Public API URL only in frontend environment variables.
+- UI state in React; durable customer data must be stored in the backend.
 
 ### Backend and data
-- PostgreSQL as source of truth; Supabase Auth and Postgres are proposed for the MVP.
-- Row-level security on every customer-owned table.
-- Server-side API/worker layer for secrets, GitHub webhooks, billing, build orchestration and deployment promotion.
-- Never expose service-role keys, GitHub installation tokens, AI keys or payment secrets to the browser.
+
+- Cloudflare Worker API: `apps/fedemic-cloud-api/`.
+- Worker name: `fedemic-cloud-api`.
+- Cloudflare D1 database: `fedemic-cloud`, bound to the Worker as `DB`.
+- Better Auth handles registration, login, sessions and password security.
+- Better Auth's required tables are separate from the five existing application tables and must be generated from the installed Better Auth version before applying a migration.
+- The existing D1 application tables are retained: `cloud_profiles`, `cloud_projects`, `website_pages`, `cloud_subscriptions`, and `cloud_usage_events`.
+- Every private API operation must derive the user from a verified Better Auth session. Never trust a browser-supplied owner ID.
+- Never expose Cloudflare secrets, GitHub installation tokens, AI keys or payment secrets to the browser.
 
 ### Hosting plane
+
 - Cloudflare for DNS, CDN, edge routing and static delivery where plan limits and pricing fit.
-- R2 or equivalent object storage for immutable build artifacts.
+- R2 or equivalent object storage for immutable build artifacts, when affordable.
 - Queue-backed build orchestration and isolated build workers.
 - Customer code must never execute inside the dashboard/API process.
 - Static-site hosting is distinct from future server-side runtime support.
 
 ### Integrations
+
 - GitHub App for repository installation and webhooks.
 - AI provider abstraction with server-side keys, quotas and validated structured output.
 - Payment provider with signed webhook verification.
 - Registrar API only after custom-domain connection is stable.
 
 ## Core data model
-- profiles: user profile and account metadata.
-- projects: owner, name, slug, framework, type and status.
-- website_pages: project page slug and validated JSON page schema.
-- github_installations: GitHub App installation reference (never raw browser token).
-- deployments: commit, build status, immutable artifact reference and URL.
-- domains: hostname, project, verification and TLS state.
-- usage_daily: storage, bandwidth, build minutes and AI credits.
-- entitlements and subscriptions: lifetime access and paid plans.
-- audit_events: security-sensitive account and project actions.
 
-All customer-owned rows require RLS based on auth.uid(). Public website delivery uses a separate read-only publication path, never customer write privileges.
+Existing D1 application tables:
+
+- `cloud_profiles`: user profile and account metadata.
+- `cloud_projects`: owner, name, slug, framework, type and status.
+- `website_pages`: project page slug and validated JSON page schema.
+- `cloud_subscriptions`: subscription and entitlement records.
+- `cloud_usage_events`: metered usage events.
+
+Better Auth separately manages its user, session, account and verification tables. Future phases may add GitHub installations, deployments, domains, audit events and daily usage summaries.
+
+Public website delivery must use a separate read-only publication path, never customer write privileges.
 
 ## Security and reliability
-- RLS and server-side authorization; never trust browser-supplied owner IDs.
+
+- Better Auth session verification and server-side authorization.
 - Least-privilege GitHub App permissions and token rotation.
-- Secrets encrypted at rest and decrypted only in trusted server execution.
+- Secrets stored as Cloudflare Worker secrets, never committed to Git.
 - Webhook signature verification and replay protection.
 - Build isolation, resource quotas, egress restrictions and artifact scanning.
 - Rate limits, upload limits, abuse reporting and account suspension.
@@ -111,22 +131,35 @@ All customer-owned rows require RLS based on auth.uid(). Public website delivery
 - Per-customer usage metering and platform-wide cost alerts.
 
 ## Lifetime offer guardrails
+
 The $10 lifetime purchase grants lifetime access to explicitly listed builder features, not unlimited infrastructure. Free hosting is quota-limited under transparent published terms. AI usage, storage, bandwidth, build minutes, domain registration and renewals have separate limits or charges. Never sell unlimited lifetime compute or imply a connected domain registration is included.
 
-## Environment variables
-Frontend public values: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.  
-Server-only later-phase values: SUPABASE_SERVICE_ROLE_KEY, GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, GITHUB_WEBHOOK_SECRET, AI_PROVIDER_API_KEY, PAYMENT_SECRET_KEY, PAYMENT_WEBHOOK_SECRET, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN and R2_BUCKET.
+## Environment variables and secrets
 
-Never commit real credentials or put server secrets in VITE_ variables.
+Frontend public value:
+
+- `VITE_FEDEMIC_CLOUD_API_URL`: public URL of the Cloudflare Worker API.
+
+Cloudflare Worker secrets/configuration:
+
+- `BETTER_AUTH_SECRET`: already stored as a Cloudflare Worker Secret; never copy it into GitHub or chat.
+- `BETTER_AUTH_URL`: Worker API base URL, configured when the Worker URL is confirmed.
+- `BETTER_AUTH_TRUSTED_ORIGINS`: exact Fedemic Cloud frontend origin, configured when its deployment URL is known.
+- Future server-only values: GitHub App credentials, AI provider keys and payment secrets.
+
+Never commit real credentials or put server secrets in `VITE_` variables.
 
 ## Deployment strategy
-Keep Fedemic Cloud isolated from the existing Fedemic AI application. Deploy Cloud from its own root directory or preferably a dedicated repository before public launch. Use preview builds, migrations and integration tests. No production claim until authentication, RLS, deployments, domain verification, billing webhooks and abuse controls are tested.
+
+Keep Fedemic Cloud isolated from the existing Fedemic AI application. Deploy the API Worker from its own root directory and deploy the frontend separately. Use preview builds, reviewed D1 migrations and integration tests. No production claim until authentication, ownership checks, deployments, domain verification, billing webhooks and abuse controls are tested.
 
 ## Phase 1 exit checklist
+
 - [ ] Cloud app builds independently.
 - [ ] Dashboard is responsive.
 - [ ] Project create/list/open/delete works in demo mode.
-- [ ] Supabase schema and RLS migration reviewed.
-- [ ] Dedicated Supabase project configured.
-- [ ] Real account and database integration tested.
+- [ ] Cloudflare Worker source is connected to the existing Worker.
+- [ ] Better Auth schema is generated and applied to the existing D1 database.
+- [ ] Registration, login, logout and session checks are tested.
+- [ ] Private project APIs enforce verified ownership.
 - [ ] Existing Fedemic AI app remains unchanged.
