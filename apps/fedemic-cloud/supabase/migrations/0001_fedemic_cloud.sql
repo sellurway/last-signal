@@ -1,0 +1,6 @@
+-- RETIRED DRAFT — DO NOT APPLY.
+-- This was an early Supabase/PostgreSQL proposal.
+-- Fedemic Cloud now uses Cloudflare Workers + D1.
+-- The five application tables already created in the fedemic-cloud D1 database
+-- are retained. Better Auth authentication tables will be generated separately
+-- from the installed Better Auth version before any authentication migration.
