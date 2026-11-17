@@ -2,14 +2,29 @@
 
 The five Fedemic Cloud application tables have already been created manually in the existing D1 database named `fedemic-cloud`. Keep them.
 
-Better Auth also needs its own user, session, account and verification tables. Those tables must be generated from the exact Better Auth version installed in this Worker. They are intentionally not hand-written here.
+Better Auth uses its own user, session, account, and verification tables. The Worker now exposes a one-time, protected migration endpoint at:
 
-Before applying the Better Auth migration:
+`POST /__admin/migrate-auth`
 
-1. Install dependencies in this API directory.
-2. Generate the Better Auth schema using the installed version and its Cloudflare D1-compatible configuration.
-3. Review the generated SQL.
-4. Confirm it only creates/updates Better Auth tables and does not drop or replace the existing application tables.
-5. Apply it to the existing `fedemic-cloud` D1 database.
+The endpoint uses Better Auth's official `getMigrations(auth.options)` helper for the built-in D1/Kysely adapter. It must be protected by the Cloudflare Worker secret `MIGRATION_TOKEN`. Never put this token in GitHub, frontend code, or a `VITE_*` variable.
 
-Do not run an unreviewed migration against production data.
+## One-time production setup
+
+1. In Cloudflare, open the `fedemic-cloud-api` Worker settings and add a secret named `MIGRATION_TOKEN`.
+2. Generate a unique, high-entropy token (at least 32 random bytes). Do not reuse `BETTER_AUTH_SECRET`.
+3. Wait for the Worker version containing this endpoint to deploy.
+4. Send a POST request to `https://<your-worker-host>/__admin/migrate-auth` with the header `Authorization: Bearer <your-MIGRATION_TOKEN>`.
+5. Confirm the response says `"success": true`.
+6. Remove the `MIGRATION_TOKEN` secret after successful migration. The endpoint will then return 503 and cannot be used again unless a new token is configured.
+
+The migration helper creates or updates Better Auth's required tables. It does not drop or replace the five Fedemic Cloud application tables. Do not run unrelated SQL or manually delete existing tables.
+
+## Verification
+
+After migration, test the Better Auth endpoints:
+
+- `GET /api/auth/ok` (or Better Auth's documented health endpoint for the installed version)
+- A registration request through the Better Auth client using `/api/auth/sign-up/email`
+- A login request using `/api/auth/sign-in/email`
+
+Do not claim registration/login is working until a real test account can register and sign in successfully.
