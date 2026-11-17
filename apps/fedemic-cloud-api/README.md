@@ -19,7 +19,7 @@ The secret value must remain in Cloudflare. Never put it in GitHub, source files
 
 ## Important before connecting GitHub Builds
 
-Replace the placeholder `database_id` in `wrangler.jsonc` with the ID of the existing D1 database named `fedemic-cloud`. Do not create a second database. Keep the binding name exactly `DB`.
+The `database_id` in `wrangler.jsonc` points to the existing D1 database named `fedemic-cloud`. Do not create a second database. Keep the binding name exactly `DB`.
 
 The existing Worker secret `BETTER_AUTH_SECRET` must be available to this Worker after Git-based deployment. It is not stored in this repository.
 
@@ -44,3 +44,7 @@ This source prepares Better Auth with email/password and Cloudflare D1. Authenti
 Do not apply the retired Supabase SQL file. Do not delete or recreate the five existing Fedemic Cloud application tables. Better Auth's own tables are a separate migration and will be added in a later guided step.
 
 The frontend origin will be added to `BETTER_AUTH_TRUSTED_ORIGINS` after the Fedemic Cloud frontend has a real deployment URL. Do not use the SellUrWay or Fedemic AI website as the trusted origin.
+
+## Git deployment trigger
+
+A documentation-only commit on `fedemic-cloud-phase-1` was added to trigger the connected Cloudflare Git deployment. It does not change Worker behavior.
