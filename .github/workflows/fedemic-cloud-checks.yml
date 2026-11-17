@@ -1,0 +1,40 @@
+name: Fedemic Cloud checks
+
+on:
+  push:
+    branches: [fedemic-cloud-phase-1]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cloud-api:
+    name: Cloudflare API typecheck and build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/fedemic-cloud-api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install API dependencies
+        run: npm install
+      - name: Typecheck and bundle Worker
+        run: npm run build
+
+  cloud-frontend:
+    name: Fedemic Cloud frontend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/fedemic-cloud
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install frontend dependencies
+        run: npm install
+      - name: Build frontend
+        run: npm run build
